@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -25,18 +26,19 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion rotation = Quaternion.identity;
 
     private void Start()
-    {        
+    {
         // 문제 1) 위에 주어진 animator, rb 변수를 이용해 Component를 받아오는 명령어를 작성하세요.
         // (Component당 5점, 합계 5*2=10점, 부분점수 있음)
-
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
     {
         // 문제 2) Input.GetAxis를 사용하여 존 레몬이 움직일 수 있게 좌표를 입력하세요.
         // 0f 대신 정답을 채워넣으면 작동합니다. (각 변수당 5점, 총 10점)
-        float horizontal = 0f; // 이 변수와
-        float vertical = 0f; // 이 변수를 사용해야 합니다.
+        float horizontal = Input.GetAxis("horizontal"); // 이 변수와
+        float vertical = Input.GetAxis("vertical"); // 이 변수를 사용해야 합니다.
         
         #region 건드리면 작동 안 됨
         movement.Set(horizontal, 0f, vertical);
@@ -48,14 +50,20 @@ public class PlayerMovement : MonoBehaviour
         bool hasHorizontalInput = !Mathf.Approximately(horizontal, 0f);
         bool hasVerticalInput = !Mathf.Approximately(vertical, 0f);        
 
-        bool isWalking = false;
+        bool isWalking = hasHorizontalInput || hasVerticalInput;
+        /*여기 movement Normalize하는거 있는데 있는것만 기억나고 식이 기억이 나질 않습니다....ㅠ
+         다음 시험에는 뇌 용량을 업그레이드 해 오겠습니다....ㅠㅠ*/
+        
+
+
 
         // 문제 4) isWalking 변수를 Animator의 IsWalking 파라미터에 적용하세요. (10점)
-
+        SetApplicationVariable. Set.Animator("isWalking", isWalking);
+        
 
         // 문제 5) 원하는 방향으로 이동할 수 있는 Vector3값을 만드는 명령줄을 Vector3.zero를 지우고 완성해 주세요. (10점)
-        Vector3 desiredFoward = Vector3.zero;
-        rotation = Quaternion.LookRotation(desiredFoward);
+        Vector3 de = Vector3.RotateTowards(transform.forward, movement, rotation, turnSpeed * Time fixedDeltatime, 0f) ;
+        rotation = Quaternion.LookRotation(de);
 
     }
 
@@ -64,4 +72,7 @@ public class PlayerMovement : MonoBehaviour
         rb.MovePosition(rb.position + movement * animator.deltaPosition.magnitude);
         rb.MoveRotation(rotation);
     }
+   /* To. 채한승 교수님...........죄송합니다.... 분명히 저번주 수업시간에 끝까지 했는데.....저도 제가 밉습니다......ㅠㅠ
+    오기 전까지 공부했지만 제 햄스터 버금가는 기억력으로 다 날라가버렸습니다... 유니티랑 스크립트 어렵긴해도 전 교수님 수업이 좋습니다... 질문하기도 편하고 수업분위기도 지루하지 않아서 따라가기 좋습니다...
+   제가 다음 기말에는 더 공부해서 오겠습니다... 서윤진의 레벨업 기대해주세욥....*/
 }
